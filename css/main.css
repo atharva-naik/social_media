@@ -1,0 +1,237 @@
+@import url('https://fonts.googleapis.com/css?family=Andika+New+Basic&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Special+Elite&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Finger+Paint&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Roboto+Slab&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Orbitron&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Langar&display=swap');
+@import url('https://fonts.googleapis.com/css?family=VT323&display=swap');
+
+@font-face {
+    font-family: Calculator;
+    src: url(../fonts/calculator/digital-7.ttf);
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    background: rgb(9,69,190);
+    background: linear-gradient(60deg, rgba(9,69,190,1) 0%, rgba(143,8,207,1) 35%, rgba(20,218,91,1) 100%);
+    width: 100%;
+}
+
+.nav-link{
+    font-family: 'VT323';
+    font-size: 22px;
+    font-weight: 100;
+    color: black;
+    text-align: right;
+}
+
+.nav-link:hover {
+    color: brown;
+    background-image: url('https://img.rawpixel.com/s3fs-private/rawpixel_images/website_content/pf-eye-034_1.jpg?w=800&dpr=1&fit=default&crop=default&q=65&vib=3&con=3&usm=15&bg=F4F4F3&ixlib=js-2.2.1&s=4ce971879508221145352ea45e0842b4');
+    background-size: contain;
+    padding-bottom: 5px;
+    padding-right: 5px;
+}
+
+.current-user{
+    text-decoration: none;
+    font-family: 'VT323';
+    font-size: 24px;
+    color: white;
+    -webkit-animation: current-user 2000ms ease-in-out infinite alternate;
+    -moz-animation: current-user 2000ms ease-in-out infinite alternate;
+    animation: current-user 2000ms ease-in-out infinite alternate;
+    text-shadow: 1px 1px 0px black;
+}
+
+@-webkit-keyframes current-user{
+    0%{
+        margin-top: 2px;
+        /* transform: rotate(10deg); */
+    }
+    20%{
+        margin-top: -2px;
+    } 
+    40%{
+        margin-left: -2px;
+    } 
+    60%{
+        margin-left: 2px;
+    }       
+    70%{
+        text-shadow: 2px 2px 0px black;
+        transform: rotate(-2deg);
+    }
+    80%{
+        text-shadow: 2px 2px 0px black;
+        transform: rotate(4deg);
+    }
+    100%{
+        text-shadow: 1px 1px 0px black;
+    }
+}
+
+.current-user:hover{
+    text-decoration: none;
+    color: white;
+    transform: rotate(5deg);
+    text-shadow: 2px 2px 0px black;
+}
+
+.dropdown-menu{
+    color: #484848;
+}
+
+.dropdown-item{
+    font-family: 'VT323';
+    font-size: 22px;
+}
+
+.nav-item .active{
+    color: #c79634;
+}
+
+/* .navbar-collapse{
+    background-image: url("https://img.freepik.com/free-photo/warm-paper-texture_1194-11901.jpg?size=626&ext=jpg");
+} */
+
+.navbar{
+    /* background-color: #4158D0;
+    background-image: linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%); */
+    /* background: rgb(187,184,27);
+    background: linear-gradient(-40deg, rgba(187,184,27,1) 0%, rgba(147,145,13,1) 35%, rgba(192,49,0,1) 100%); */
+    background: rgb(255,216,0);
+background: linear-gradient(-40deg, rgba(255,216,0,1) 0%, rgba(255,251,0,1) 35%, rgba(180,192,0,1) 100%);
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.4);
+    /* background-image: linear-gradient(0deg, #242424, #727272); */
+    height: 50px;
+    width: 100vw;
+}
+
+.navbar:hover{
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.8);
+}
+
+.navbar-scroll{
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.8);
+}
+
+.navbar-expand-lg{
+    width: 100vw;
+    white-space: nowrap;
+}
+
+.navbar-brand{
+    color: white;
+    /* text-shadow: -1px 1px grey; */
+    background-color: #484848;
+    padding: 5px;
+    margin-left: -12px;
+    font-weight: bold;
+    /* padding-left: 10px; */
+    font-family: Calculator;
+}
+
+.navbar-brand:hover {
+    color: #484848;
+    background-color: white; 
+}
+
+.navbar-toggler{
+    background-color: #4158D0;
+    background-image: linear-gradient(45deg, #4158D0 22%, #C850C0 60%);
+    border: none;
+    outline: 0px;
+}
+
+/* The sticky class is added to the navbar with JS when it reaches its scroll position */
+.sticky{
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+  
+/* Add some top padding to the page content to prevent sudden quick movement (as the navigation bar gets a new position at the top of the page (position:fixed and top:0) */
+.sticky + .content{
+    padding-top: 60px;
+}
+
+.navbar-toggler-icon{
+    padding: 4px;
+    color: white;
+}
+
+.header {
+    text-align: center;
+    color: white;
+    font-size: 22px;
+    text-decoration: none;
+    font-family: Calculator;
+}
+
+.header h1 {
+    text-shadow: 2px 2px #000;
+}
+
+.header h1:hover {
+    color: #000;
+    text-shadow: 2px 2px #ffffff;
+    margin-left: 10px;
+}
+
+.content {
+    width: 1300px;
+    background-color: white;
+    margin-left: auto;
+    border-radius: 20px;
+    margin-right: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    text-align: center;
+    font-family: 'Andika New Basic';
+    word-spacing: 1px;
+}
+
+.content p {
+    font-size: 18px;
+}
+
+.content p:hover {
+    color: brown;
+}
+
+.content h3{
+    font-family: 'Langar';
+}
+
+.repo-details {
+    margin-left: auto;
+    margin-right: auto;
+    width: 1000px;
+}
+
+.repo-link {
+    float: right;
+    padding-top: 10px;
+}
+
+.copyright  {
+    margin-top: 100px;
+    font-family: 'Special Elite';
+}
+
+.copyright:hover {
+    color: black;
+}
+
+.footer {
+    width: 100%;
+    color: white;
+    font-weight: bold;
+    /* background-color: wheat; */
+}

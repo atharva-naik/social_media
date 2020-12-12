@@ -1,40 +1,27 @@
 .
-├── gmail
-│   ├── base.py
-│   └── __init__.py
+├── css
+│   └── main.css
+├── fonts
+│   └── calculator
+│       ├── digital-7 (italic).ttf
+│       ├── digital-7 (mono italic).ttf
+│       ├── digital-7 (mono).ttf
+│       ├── digital-7.ttf
+│       └── readme.txt
 ├── images
 │   ├── facebook.png
 │   ├── gmail.png
+│   ├── hangouts.png
 │   ├── instagram.jpg
 │   ├── quora.png
-│   └── twitter.png
-├── __init__.py
+│   ├── twitter.png
+│   ├── whatsapp.png
+│   └── youtube.png
+├── index.html
+├── js
+│   └── index.js
 ├── LICENSE
-├── nlp
-│   └── __init__.py
-├── __pycache__
-│   └── __init__.cpython-37.pyc
-├── quora
-│   ├── base.py
-│   └── __init__.py
 ├── README.md
-├── requirements.in
-├── requirements.txt
-├── tree.txt
-├── twitter
-│   ├── base.py
-│   ├── __init__.py
-│   ├── objects.py
-│   ├── __pycache__
-│   │   ├── base.cpython-37.pyc
-│   │   ├── __init__.cpython-37.pyc
-│   │   ├── objects.cpython-37.pyc
-│   │   └── utils.cpython-37.pyc
-│   └── utils.py
-├── whatsapp
-│   ├── base.py
-│   └── __init__.py
-└── youtube
-    └── __init__.py
+└── tree.txt
 
-10 directories, 27 files
+5 directories, 19 files
