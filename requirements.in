@@ -1,0 +1,10 @@
+tqdm
+nltk
+numpy
+spacy
+pandas
+sklearn
+datetime
+selenium
+ansicolors
+webdriver_manager
