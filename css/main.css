@@ -11,14 +11,18 @@
     font-family: Calculator;
     src: url(../fonts/calculator/digital-7.ttf);
 }
+@font-face {
+    font-family: Dotty;
+    src: url(../fonts/dotty/dotty.ttf);
+}
 
 html {
     height: 100%;
 }
 
 body {
-    background: rgb(9,69,190);
-    background: linear-gradient(60deg, rgba(9,69,190,1) 0%, rgba(143,8,207,1) 35%, rgba(20,218,91,1) 100%);
+    /* background: rgb(9,69,190); */
+    /* background: linear-gradient(60deg, rgba(9,69,190,1) 0%, rgba(143,8,207,1) 35%, rgba(20,218,91,1) 100%); */
     width: 100%;
 }
 
@@ -106,10 +110,10 @@ body {
     /* background: rgb(187,184,27);
     background: linear-gradient(-40deg, rgba(187,184,27,1) 0%, rgba(147,145,13,1) 35%, rgba(192,49,0,1) 100%); */
     background: rgb(255,216,0);
-background: linear-gradient(-40deg, rgba(255,216,0,1) 0%, rgba(255,251,0,1) 35%, rgba(180,192,0,1) 100%);
+    background: linear-gradient(-40deg, rgba(255,216,0,1) 0%, rgba(255,251,0,1) 35%, rgba(180,192,0,1) 100%);
     box-shadow: 0 2px 5px 0 rgba(0,0,0,0.4);
     /* background-image: linear-gradient(0deg, #242424, #727272); */
-    height: 50px;
+    height: 45px;
     width: 100vw;
 }
 
@@ -129,17 +133,26 @@ background: linear-gradient(-40deg, rgba(255,216,0,1) 0%, rgba(255,251,0,1) 35%,
 .navbar-brand{
     color: white;
     /* text-shadow: -1px 1px grey; */
-    background-color: #484848;
-    padding: 5px;
-    margin-left: -12px;
+    background: rgb(201,58,25);
+    background: radial-gradient(circle, rgba(201,58,25,1) 0%, rgba(255,15,1,1) 25%, rgba(204,56,9,1) 60%);
+    /* padding: 5px; */
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-left: -20px;
+    transform: rotate(-15deg);
+    height: 30px;
     font-weight: bold;
+    display: table-cell;
+    vertical-align: middle;
     /* padding-left: 10px; */
-    font-family: Calculator;
+    font-family: Dotty;
 }
 
 .navbar-brand:hover {
-    color: #484848;
+    color: red;
+    background: none;
     background-color: white; 
+    transform: rotate(15deg);
 }
 
 .navbar-toggler{
@@ -169,9 +182,9 @@ background: linear-gradient(-40deg, rgba(255,216,0,1) 0%, rgba(255,251,0,1) 35%,
 .header {
     text-align: center;
     color: white;
-    font-size: 22px;
+    font-size: 40px;
     text-decoration: none;
-    font-family: Calculator;
+    font-family: Dotty;
 }
 
 .header h1 {
@@ -186,7 +199,8 @@ background: linear-gradient(-40deg, rgba(255,216,0,1) 0%, rgba(255,251,0,1) 35%,
 
 .content {
     width: 1300px;
-    background-color: white;
+    background-color: black;
+    color: white;
     margin-left: auto;
     border-radius: 20px;
     margin-right: auto;
@@ -197,13 +211,17 @@ background: linear-gradient(-40deg, rgba(255,216,0,1) 0%, rgba(255,251,0,1) 35%,
     word-spacing: 1px;
 }
 
+.content:hover {
+    opacity: 0.8;
+}
+
 .content p {
     font-size: 18px;
 }
 
-.content p:hover {
+/* .content p:hover {
     color: brown;
-}
+} */
 
 .content h3{
     font-family: 'Langar';
@@ -212,12 +230,145 @@ background: linear-gradient(-40deg, rgba(255,216,0,1) 0%, rgba(255,251,0,1) 35%,
 .repo-details {
     margin-left: auto;
     margin-right: auto;
+    background-color: #000;
+    padding-bottom: 10px;
+    padding-left: 12px;
+    padding-right: 12px;
     width: 1000px;
+    text-align: center;
+    border-radius: 20px;
+}
+
+.repo-details h3 {
+    font-family: 'VT323';
+    text-align: center;
+    font-size: 35px;
+    color: white;
+}
+
+.repo-details a {
+    text-decoration: none;
+    color: white;
+    font-size: 30px;
+    font-weight: lighter;
+    font-family: Dotty;
+}
+
+.repo-details a:hover {
+    color: #58ed96;
+    text-decoration: none;
+    -webkit-animation: elastic-text1 500ms ease-in-out infinite alternate;
+    -moz-animation: elastic-text1 500ms ease-in-out infinite alternate;
+    animation: elastic-text1 500ms ease-in-out infinite alternate;    
+} 
+
+@-webkit-keyframes elastic-text1{
+    0%{
+        word-spacing: 0px;
+        /* transform: rotate(10deg); */
+    }
+    25%{
+        word-spacing: 2px;
+    }
+    50%{
+        word-spacing: 10px;
+    }
+    90%{
+        word-spacing: 20px;
+    }
+    100%{
+        word-spacing: 0px;
+    }
+}
+
+.repo-details h3:hover {
+    color: #58ed96;
+    
+    -webkit-animation: elastic-text 500ms ease-in-out infinite alternate;
+    -moz-animation: elastic-text 500ms ease-in-out infinite alternate;
+    animation: elastic-text 500ms ease-in-out infinite alternate;
+}
+
+@-webkit-keyframes elastic-text{
+    0%{
+        word-spacing: 0px;
+        transform: rotate(0deg);
+        /* transform: rotate(10deg); */
+    }
+    25%{
+        transform: rotate(10deg);
+        word-spacing: 2px;
+    }
+    50%{
+        transform: rotate(-10deg);
+        word-spacing: 10px;
+    }
+    90%{
+        transform: rotate(10deg);
+        word-spacing: 20px;
+    }
+    100%{
+        transform: rotate(10deg);
+        word-spacing: 0px;
+    }
 }
 
 .repo-link {
     float: right;
     padding-top: 10px;
+}
+
+/* .stat-btn  {
+    text-align: center;
+    padding-left: 3px;
+    padding-right: 3px;
+    font-family: 'VT323';
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+}
+
+button[name="stat-btn"] {
+    border: none;
+    outline: none;
+    height: 30px;
+    border-radius: 5px;
+    background-color: #484848;
+    color: white;
+    border: none;
+    text-align: center;
+    line-height: 30px; 
+}
+
+button[name="stat-btn"]:hover {
+    border: none;
+    outline: none;
+    background-color: white;
+    color: #484848;
+    border: none; 
+} */
+
+#wacth {
+    background-color: #484848;
+    color: white;
+}
+
+.gh-button-inside {
+    text-align: center;
+    font-family: Dotty;
+    font-size: 30px;
+    height: 30px;
+    line-height: 30px;
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    background-color: #484848;
+    color: white;
+}
+
+.github-repo-button a{
+    color: #58ed96;
+
 }
 
 .copyright  {
