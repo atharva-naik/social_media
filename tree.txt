@@ -1,73 +1,79 @@
 .
-├── base.py
-├── facebook
-│   ├── base.py
-│   ├── __init__.py
-│   └── __pycache__
-│       ├── base.cpython-37.pyc
-│       └── __init__.cpython-37.pyc
-├── gmail
-│   ├── base.py
-│   ├── __init__.py
-│   └── __pycache__
-│       ├── base.cpython-37.pyc
-│       └── __init__.cpython-37.pyc
-├── hangouts
-│   ├── base.py
-│   ├── __init__.py
-│   └── __pycache__
-│       ├── base.cpython-37.pyc
-│       └── __init__.cpython-37.pyc
-├── images
-│   ├── facebook.png
-│   ├── gmail.png
-│   ├── hangouts.png
-│   ├── instagram.jpg
-│   ├── quora.png
-│   ├── twitter.png
-│   ├── whatsapp.png
-│   └── youtube.png
-├── __init__.py
+├── example.ipynb
+├── example.py
+├── fetch_twitter_profile.py
 ├── LICENSE
-├── nlp
-│   ├── base.py
-│   └── __init__.py
-├── __pycache__
-│   ├── base.cpython-37.pyc
-│   ├── __init__.cpython-37.pyc
-│   ├── simulation.cpython-37.pyc
-│   └── utils.cpython-37.pyc
-├── quora
-│   ├── base.py
-│   ├── __init__.py
-│   └── __pycache__
-│       ├── base.cpython-37.pyc
-│       └── __init__.cpython-37.pyc
+├── profiles.csv
 ├── README.md
 ├── requirements.in
 ├── requirements.txt
-├── scrapers.py
 ├── setup.py
-├── simulation.py
-├── tree.txt
-├── twitter
+├── social_media
 │   ├── base.py
+│   ├── facebook
+│   │   ├── base.py
+│   │   ├── __init__.py
+│   │   └── __pycache__
+│   │       ├── base.cpython-37.pyc
+│   │       └── __init__.cpython-37.pyc
+│   ├── gmail
+│   │   ├── base.py
+│   │   ├── __init__.py
+│   │   └── __pycache__
+│   │       ├── base.cpython-37.pyc
+│   │       └── __init__.cpython-37.pyc
+│   ├── hangouts
+│   │   ├── base.py
+│   │   ├── __init__.py
+│   │   └── __pycache__
+│   │       ├── base.cpython-37.pyc
+│   │       └── __init__.cpython-37.pyc
+│   ├── images
+│   │   ├── facebook.png
+│   │   ├── gmail.png
+│   │   ├── hangouts.png
+│   │   ├── instagram.jpg
+│   │   ├── quora.png
+│   │   ├── twitter.png
+│   │   ├── whatsapp.png
+│   │   └── youtube.png
 │   ├── __init__.py
-│   ├── objects.py
+│   ├── nlp
+│   │   ├── base.py
+│   │   └── __init__.py
 │   ├── __pycache__
 │   │   ├── base.cpython-37.pyc
 │   │   ├── __init__.cpython-37.pyc
-│   │   ├── objects.cpython-37.pyc
+│   │   ├── simulation.cpython-37.pyc
 │   │   └── utils.cpython-37.pyc
-│   └── utils.py
-├── whatsapp
-│   ├── base.py
-│   └── __init__.py
-└── youtube
-    ├── base.py
-    ├── __init__.py
-    └── __pycache__
-        ├── base.cpython-37.pyc
-        └── __init__.cpython-37.pyc
+│   ├── quora
+│   │   ├── base.py
+│   │   ├── __init__.py
+│   │   └── __pycache__
+│   │       ├── base.cpython-37.pyc
+│   │       └── __init__.cpython-37.pyc
+│   ├── scrapers.py
+│   ├── simulation.py
+│   ├── twitter
+│   │   ├── base.py
+│   │   ├── __init__.py
+│   │   ├── objects.py
+│   │   ├── __pycache__
+│   │   │   ├── base.cpython-37.pyc
+│   │   │   ├── __init__.cpython-37.pyc
+│   │   │   ├── objects.cpython-37.pyc
+│   │   │   └── utils.cpython-37.pyc
+│   │   └── utils.py
+│   ├── whatsapp
+│   │   ├── base.py
+│   │   └── __init__.py
+│   └── youtube
+│       ├── base.py
+│       ├── __init__.py
+│       └── __pycache__
+│           ├── base.cpython-37.pyc
+│           └── __init__.cpython-37.pyc
+├── tests
+└── tree.txt
 
-16 directories, 54 files
+18 directories, 58 files
