@@ -9,3 +9,45 @@ A library for automating several social media actions, such as posting, login, n
 <img style="display: inline;" src="https://github.com/atharva-naik/social_media/blob/main/images/twitter.png?raw=true" width="100">
 <img style="display: inline;" src="https://github.com/atharva-naik/social_media/blob/main/images/whatsapp.png?raw=true" width="100">
 <img style="display: inline;" src="https://github.com/atharva-naik/social_media/blob/main/images/youtube.png?raw=true" width="100">
+
+### Installation
+
+Will be uploaded to PyPI soon. Some versions will be uploaded to TestPyPI
+
+### Some random use cases
+**USE CASE 1:**
+Fetch profile of a twitter user
+
+1. Create twitter engine
+```python
+from social_media.twitter.base import TwitterEngine
+t = TwitterEngine(patience=10) # patience is in seconds
+```
+or 
+```python
+from social_media.base import Engine
+t = Engine.select('twitter', patience=10)
+```
+2. Login (optional)
+```python 
+t.login(read_from_env=True) # read from a .env file
+```
+or
+```python
+t.login(username="username", email="email@domain.com", contact="123456789", password="password")
+"""pass the username, contact, email and password manually. 
+(at least one of username, email or contact number is needed)
+password is required"""
+```
+3. Get the profile of the person
+```python
+t.get_profile(username="@dannygonzalez") # I am truly greg (@ is optional, not really needed, also username should be exact)
+```
+4. Logout (optional)
+```python
+t.logout() 
+```
+5. Close the browser window 
+```python
+t.close(wait_for_input=False) # if wait_for_input is true then script will wait for the user to enter q to terminate
+```
