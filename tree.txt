@@ -1,9 +1,45 @@
 .
+├── build
+│   ├── bdist.linux-x86_64
+│   └── lib
+│       └── social_media
+│           ├── base.py
+│           ├── facebook
+│           │   ├── base.py
+│           │   └── __init__.py
+│           ├── gmail
+│           │   ├── base.py
+│           │   └── __init__.py
+│           ├── hangouts
+│           │   ├── base.py
+│           │   └── __init__.py
+│           ├── __init__.py
+│           ├── nlp
+│           │   ├── base.py
+│           │   └── __init__.py
+│           ├── quora
+│           │   ├── base.py
+│           │   └── __init__.py
+│           ├── scrapers.py
+│           ├── simulation.py
+│           ├── twitter
+│           │   ├── base.py
+│           │   ├── __init__.py
+│           │   ├── objects.py
+│           │   └── utils.py
+│           ├── whatsapp
+│           │   ├── base.py
+│           │   └── __init__.py
+│           └── youtube
+│               ├── base.py
+│               └── __init__.py
+├── dist
+│   ├── social_media_Atharva1797-0.0.1-py3-none-any.whl
+│   └── social_media-Atharva1797-0.0.1.tar.gz
 ├── example.ipynb
 ├── example.py
-├── fetch_twitter_profile.py
+├── example_tfp.py
 ├── LICENSE
-├── profiles.csv
 ├── README.md
 ├── requirements.in
 ├── requirements.txt
@@ -73,7 +109,12 @@
 │       └── __pycache__
 │           ├── base.cpython-37.pyc
 │           └── __init__.cpython-37.pyc
+├── social_media_Atharva1797.egg-info
+│   ├── dependency_links.txt
+│   ├── PKG-INFO
+│   ├── SOURCES.txt
+│   └── top_level.txt
 ├── tests
 └── tree.txt
 
-18 directories, 58 files
+32 directories, 85 files
