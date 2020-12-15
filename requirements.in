@@ -7,4 +7,5 @@ sklearn
 datetime
 selenium
 ansicolors
+prettytable
 webdriver_manager

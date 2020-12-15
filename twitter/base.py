@@ -14,6 +14,17 @@ from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager 
 from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException, ElementClickInterceptedException
 
+def smart_int(string):
+    string = string.replace(",","").strip()
+    if 'K' in string:
+        string = float(string.replace("K",""))*1e+3
+    elif 'M' in string:
+        string = float(string.replace("M",""))*1e+6
+    elif 'B' in string:
+        string = float(string.replace("B",""))*1e+9
+
+    return int(string)
+
 class TwitterEngine(object):
     '''
     The TwitterEngine class contains all the methods necessary to perform basic user functions
@@ -29,14 +40,16 @@ class TwitterEngine(object):
         if self.patience <= 0:
             self.patience = 1        
         self.driver = webdriver.Chrome(ChromeDriverManager().install())         
+        # self.driver.get('https://twitter.com/')
+        # self.driver.implicitly_wait(self.patience)
 
     def login(self, email=None, contact=None, password=None, read_from_env=True):
         uid = ''
         if read_from_env:
-            email = os.environ.get('EMAIL')
-            password = os.environ.get('PASSWORD')
-            contact = os.environ.get('CONTACT')
-            username = os.environ.get('USERNAME')
+            email = os.environ.get('TWITTER_EMAIL')
+            password = os.environ.get('TWITTER_PASSWORD')
+            contact = os.environ.get('TWITTER_CONTACT')
+            username = os.environ.get('TWITTER_USERNAME')
 
         if email is None:
             if contact is None:
@@ -58,7 +71,7 @@ class TwitterEngine(object):
         login_btn = self.driver.find_element_by_xpath("//span[text()='Log in']")
         login_btn.click()
         
-        time.sleep(3)
+        time.sleep(2.1)
         self.driver.implicitly_wait(self.patience)
         uid_field = self.driver.find_element_by_xpath("//input[@name='session[username_or_email]']")
         for letter in uid:
@@ -95,8 +108,98 @@ class TwitterEngine(object):
                 submit_btn = self.driver.find_element_by_xpath("//div[@data-testid='LoginForm_Login_Button']")
                 submit_btn.click()
 
+                self.driver.implicitly_wait(self.patience)
+                time.sleep(0.5)
+
+    def get_profile(self, username):
+        start = time.time()
+        self.driver.get(f"https://twitter.com/{username.replace('@','')}")
+        self.driver.implicitly_wait(self.patience)
+        
+        try: 
+            try:
+                username = username
+                name = self.driver.find_element_by_xpath("//a[contains(@href, '/photo')]").find_element_by_xpath("../following-sibling::div").text.split('\n')[0]
+                tweets = smart_int(self.driver.find_element_by_xpath(".//div[contains(text(), 'Tweets')]").text.split()[0])
+                bio = self.driver.find_element_by_xpath("//div[@data-testid='UserDescription']").text if len(self.driver.find_elements_by_xpath("//div[@data-testid='UserDescription']"))>0 else None
+                profile_header = self.driver.find_element_by_xpath("//div[@data-testid='UserProfileHeader_Items']")
+                join_date = profile_header.find_elements_by_xpath(".//span")[-1].text.replace("Joined", "").strip()
+                
+                # try:
+                #     verified = self.driver.find_element_by_xpath("//*[local-name() = 'svg'][@aria-label='Verified account']")
+                #     verified_name = self.driver.find_element_by_xpath("//*[local-name() = 'svg'][@aria-label='Verified account']/../preceding-sibling::span").text
+                #     if verified_name == name:
+                #         isverified = True
+                #     else:
+                #         isverified = False                        
+                # except:
+                #     isverified = False
+                isverified = True if len(self.driver.find_element_by_xpath("//a[contains(@href, '/photo')]").find_element_by_xpath("../following-sibling::div").find_elements_by_xpath("//*[local-name() = 'svg'][@aria-label='Verified account']"))>0 else False
+
+                following = self.driver.find_element_by_xpath("//a[contains(@href, 'following')]").text.split()[0]
+                following = smart_int(following)
+                followers = self.driver.find_element_by_xpath("//a[contains(@href, 'followers')]").text.split()[0]
+                followers = smart_int(followers)
+
+                link = profile_header.find_elements_by_xpath(".//a")
+                if len(link)>0:
+                    link = link[0].text
+                else:
+                    link = None
+                
+                location = profile_header.find_elements_by_xpath(".//span")[0].text 
+                if 'Joined' in location:
+                    location = None
+
+                # self.driver.get(f"https://twitter.com/{username.replace('@','')}/header_photo")
+                # self.driver.implicitly_wait(self.patience)
+                # banner_photo = self.driver.find_elements_by_xpath("//img[@alt='Image' and @draggable='true']")
+                # if len(banner_photo)>0:
+                #     banner_photo = banner_photo[0].get_attribute("src")
+                # else:
+                #     banner_photo = None
+                banner_photo = self.driver.find_element_by_xpath("//a[contains(@href, 'header_photo')]").find_element_by_xpath(".//img").get_attribute("src") if len(self.driver.find_elements_by_xpath("//a[contains(@href, 'header_photo')]"))>0 else None
+                profile_photo = self.driver.find_element_by_xpath("//a[contains(@href, '/photo')]").find_element_by_xpath(".//img").get_attribute("src") if len(self.driver.find_elements_by_xpath("//a[contains(@href, '/photo')]")) > 0 else None
+                
+                # self.driver.get(f"https://twitter.com/{username.replace('@','')}/photo")
+                # self.driver.implicitly_wait(self.patience)
+                # profile_photo = self.driver.find_elements_by_xpath("//img[@alt='Image' and @draggable='true']")
+                # if len(profile_photo)>0:
+                #     profile_photo = profile_photo[0].get_attribute("src")
+                # else:            
+                #     profile_photo = None
+
+                # self.driver.get("https://twitter.com/home")
+                # self.driver.implicitly_wait(self.patience)
+                # print(color(f"profile fetched in {time.time()-start} s ...", fg='yellow', style='bold'))
+
+                return TwitterProfile(name=name,
+                                username=username,
+                                bio=bio,
+                                join_date=join_date,
+                                followers=followers,
+                                following=following,
+                                tweets=tweets,
+                                link=link,
+                                location=location,
+                                isverified=isverified,
+                                profile_pic=profile_photo,
+                                banner_pic=banner_photo)
+            except:
+                notice = self.driver.find_element_by_xpath("//span[contains(text(), 'This account')]")
+                print(notice.find_element_by_xpath("../..").text)
+                return None
+        
+        except:
+            notice = self.driver.find_element_by_xpath("//span[contains(text(), 'Account suspended')]")
+            print(notice.find_element_by_xpath("../..").text)
+            return None
+
 
     def logout(self):
+        self.driver.get("https://twitter.com/home")
+        self.driver.implicitly_wait(self.patience)
+
         account_switcher = self.driver.find_element_by_xpath("//div[@data-testid='SideNav_AccountSwitcher_Button']")
         account_switcher.click()
         self.driver.implicitly_wait(self.patience)
@@ -107,12 +210,16 @@ class TwitterEngine(object):
         
         submit_btn = self.driver.find_element_by_xpath("//span[text()='Log out']")
         submit_btn.click()
+        self.driver.implicitly_wait(self.patience)
+        # time.sleep(0.5)
 
     def search(self, query=''):
         search_bar = self.driver.find_element_by_xpath("//input[@data-testid='SearchBox_Search_Input']")
         self.driver.implicitly_wait(self.patience)
         search_bar.clear()
         search_bar.send_keys(query + Keys.ENTER)
+        self.driver.implicitly_wait(self.patience)
+        # time.sleep(0.5)
 
     def tweet(self, text=''):
         self.driver.get("https://twitter.com/compose/tweet")
@@ -144,6 +251,8 @@ class TwitterEngine(object):
 
         submit_btn = self.driver.find_element_by_xpath("//div[@data-testid='tweetButton']")
         submit_btn.click()
+        self.driver.implicitly_wait(self.patience)
+        time.sleep(0.5)
 
     def get_tweets(self, limit=20, filter=None, save=True, output='tweets.csv', return_df=False):
         tweets = self.driver.find_elements_by_xpath("//div[@data-testid='tweet']")
@@ -189,11 +298,21 @@ class TwitterEngine(object):
         else:
             return tweets_to_df(results)
 
-    def close(self):
-        while True:
-            i = input("Please enter q to quit now!\n")
-            if i == 'q':
+    def close(self, wait_for_input=False):
+        if wait_for_input:
+            while True:
+                i = input("Please enter q to quit now!\n")
+                if i == 'q':
+                    try:
+                        self.logout()
+                        self.driver.implicitly_wait(self.patience)
+                    except:
+                        self.driver.quit()
+                    break
+
+        else:
+            try:
                 self.logout()
-                time.sleep(5)
+                self.driver.implicitly_wait(self.patience)
+            except:
                 self.driver.quit()
-                break

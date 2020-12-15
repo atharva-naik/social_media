@@ -1,25 +1,54 @@
 .
+├── base.py
+├── facebook
+│   ├── base.py
+│   ├── __init__.py
+│   └── __pycache__
+│       ├── base.cpython-37.pyc
+│       └── __init__.cpython-37.pyc
 ├── gmail
 │   ├── base.py
-│   └── __init__.py
+│   ├── __init__.py
+│   └── __pycache__
+│       ├── base.cpython-37.pyc
+│       └── __init__.cpython-37.pyc
+├── hangouts
+│   ├── base.py
+│   ├── __init__.py
+│   └── __pycache__
+│       ├── base.cpython-37.pyc
+│       └── __init__.cpython-37.pyc
 ├── images
 │   ├── facebook.png
 │   ├── gmail.png
+│   ├── hangouts.png
 │   ├── instagram.jpg
 │   ├── quora.png
-│   └── twitter.png
+│   ├── twitter.png
+│   ├── whatsapp.png
+│   └── youtube.png
 ├── __init__.py
 ├── LICENSE
 ├── nlp
-│   └── __init__.py
-├── __pycache__
-│   └── __init__.cpython-37.pyc
-├── quora
 │   ├── base.py
 │   └── __init__.py
+├── __pycache__
+│   ├── base.cpython-37.pyc
+│   ├── __init__.cpython-37.pyc
+│   ├── simulation.cpython-37.pyc
+│   └── utils.cpython-37.pyc
+├── quora
+│   ├── base.py
+│   ├── __init__.py
+│   └── __pycache__
+│       ├── base.cpython-37.pyc
+│       └── __init__.cpython-37.pyc
 ├── README.md
 ├── requirements.in
 ├── requirements.txt
+├── scrapers.py
+├── setup.py
+├── simulation.py
 ├── tree.txt
 ├── twitter
 │   ├── base.py
@@ -35,6 +64,10 @@
 │   ├── base.py
 │   └── __init__.py
 └── youtube
-    └── __init__.py
+    ├── base.py
+    ├── __init__.py
+    └── __pycache__
+        ├── base.cpython-37.pyc
+        └── __init__.cpython-37.pyc
 
-10 directories, 27 files
+16 directories, 54 files

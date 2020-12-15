@@ -1,4 +1,6 @@
+import colors
 import pandas as pd
+from colors import color
 
 class Tweet(object):
     def __init__(self, text, tweet_id, permalink, username, name, lang, timestamp, links=None, hashtags=None):
@@ -39,3 +41,55 @@ def tweets_to_df(tweets):
         tweets_df.append(tweet.to_dict())
     
     return pd.DataFrame(tweets_df)
+
+class TwitterProfile(object):
+    def __init__(self, name, username, bio, join_date, followers, following, tweets, link=None, location=None, isverified=False, profile_pic=None, banner_pic=None):
+        self.name=name
+        self.username=username
+        self.bio=bio
+        self.link=link
+        self.isverified=isverified
+        self.followers=followers
+        self.following=following
+        self.tweets=tweets
+        self.location=location
+        self.join_date=join_date
+        self.profile_pic=profile_pic
+        self.banner_pic=banner_pic
+
+    def __str__(self):
+        op = f"{self.name} "
+        if self.isverified:
+            op += color(f"✓", fg="blue")
+        op += "\n"
+        op += f"{self.tweets} Tweets\n"
+        if self.bio:
+            op += f"{self.bio}\n"
+        if self.location:
+            op += f"⌖  {self.location} "
+        if self.link:
+            op += f"🔗  {self.link} "
+        op += f"📅  Joined {self.join_date}\n"
+        op += f"{self.following} Following {self.followers} Followers\n"
+        
+        return op
+
+    def __repr__(self):
+        return f"{self.username}: {self.name}, {self.tweets} tweets, {self.followers} followers, following {self.following} ..."
+
+    def to_dict(self):
+        profile={}
+
+        profile['name']=self.name
+        profile['username']=self.username
+        profile['bio']=self.bio 
+        profile['link']=self.link
+        profile['isverified']=self.isverified
+        profile['followers']=self.followers
+        profile['following']=self.following
+        profile['tweets']=self.tweets
+        profile['date joined']=self.join_date
+        profile['profile photo']=self.profile_pic
+        profile['banner photo']=self.banner_pic
+
+        return profile

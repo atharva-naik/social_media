@@ -12,8 +12,4 @@ from datetime import datetime, timedelta
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options  
 from webdriver_manager.chrome import ChromeDriverManager 
-from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException, ElementClickInterceptedException 
-
-class QuoraEngine(object):
-    def __init__(self, patience=5):
-        super().__init__()
+from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException, ElementClickInterceptedException

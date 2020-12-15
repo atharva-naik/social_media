@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # This is to tell python that this is a package
 
-from .base import WhatsAppEngine
+from .base import FacebookEngine
 
-__all__ = ['WhatsAppEngine']
+__all__ = ['FacebookEngine']
