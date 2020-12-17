@@ -43,7 +43,7 @@ class TwitterEngine(object):
         # self.driver.get('https://twitter.com/')
         # self.driver.implicitly_wait(self.patience)
 
-    def login(self, email=None, contact=None, password=None, read_from_env=True):
+    def login(self, email=None, username=None, contact=None, password=None, read_from_env=True):
         uid = ''
         if read_from_env:
             email = os.environ.get('TWITTER_EMAIL')
@@ -306,6 +306,7 @@ class TwitterEngine(object):
                     try:
                         self.logout()
                         self.driver.implicitly_wait(self.patience)
+                        self.driver.quit()
                     except:
                         self.driver.quit()
                     break
@@ -314,5 +315,6 @@ class TwitterEngine(object):
             try:
                 self.logout()
                 self.driver.implicitly_wait(self.patience)
+                self.driver.quit()
             except:
                 self.driver.quit()
