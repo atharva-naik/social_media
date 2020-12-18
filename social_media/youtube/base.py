@@ -3,7 +3,7 @@ import selenium
 import prettytable
 import pandas as pd
 # from .utils import *
-from .objects import *
+from .models import *
 from colors import color
 import tqdm, logging, calendar
 from selenium import webdriver
@@ -11,58 +11,14 @@ import os, re, time, random, copy
 from string import ascii_lowercase
 from prettytable import PrettyTable
 from datetime import datetime, timedelta
+from dotenv import load_dotenv, find_dotenv
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options  
 from webdriver_manager.chrome import ChromeDriverManager 
+from social_media.utils import split_by_template, format_time, smart_int
 from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException, ElementClickInterceptedException
 
-# eg template: "<TEXT> by <TEXT> <INT> <TEXT> ago <INT> <TEXT> <INT> <TEXT> <INT> views"
-def split_by_template(text, template):
-    separators = template.replace("<TEXT>", "").replace("<INT>", "").strip().split()
-    curr_txt = copy.deepcopy(text)
-    curr_tmp = copy.deepcopy(template)
-    res = []
-    
-    for separator in separators:
-        txt = curr_txt.split(separator)[0].strip()
-        tmp = curr_tmp.split(separator)[0].strip()
-
-        integers = []
-        for i in range(tmp.count('<INT>')):
-            integers.append(int(re.findall(r"([0-9]+)", txt)[i].strip()))
-        txt = re.sub(r"([0-9]+)", "<INT>", txt).strip().split("<INT>")
-        texts = [item.strip() for item in txt if item is not '']
-        
-        int_ctr=0
-        text_ctr=0
-        for temp in tmp.split():
-            if temp == '<TEXT>':
-                res.append(texts[text_ctr])
-                text_ctr += 1
-            elif temp == '<INT>':
-                res.append(integers[int_ctr])
-                int_ctr += 1
-        #         print(tmp)
-        curr_txt = curr_txt.split(separator)[-1].strip()
-        curr_tmp = curr_tmp.split(separator)[-1].strip()
-    
-    return res
-
-def format_time(time_str):
-    if time_str.count(':') == 1:
-        time_str = '00:'+time_str
-    return time_str
-
-def smart_int(string):
-    string = string.replace(",","").strip()
-    if 'K' in string:
-        string = float(string.replace("K",""))*1e+3
-    elif 'M' in string:
-        string = float(string.replace("M",""))*1e+6
-    elif 'B' in string:
-        string = float(string.replace("B",""))*1e+9
-
-    return int(string)
+# once you logout, the engine has to be destroyed
 
 class YouTubeEngine(object):
     """
@@ -73,32 +29,37 @@ class YouTubeEngine(object):
     driver : the webdriver onject for using selinium
     List of member functions
     """
-    def __init__(self, patience=5):
+    def __init__(self, patience=5, maximize=True):
         super().__init__()
+        load_dotenv(find_dotenv())
         self.patience = patience
-        self.current_user = None
+        self.logged_in = False
         if self.patience <= 0:
             self.patience = 1    
         chrome_options = Options()
         chrome_options.add_argument("--disable-notifications")
         self.driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chrome_options)
+        if maximize:
+            self.driver.maximize_window()
 
-    def login(self, email=None, contact=None, password=None, read_from_env=True):
-        uid = ''
+    def __repr__(self):
+        if self.logged_in:
+            return f"YouTube engine with patience={self.patience}, user logged in ..."
+        else:
+            return f"YouTube engine with patience={self.patience}, user not logged in ..."
+
+    def login(self, email=None, password=None, read_from_env=True):
+        if self.logged_in:
+            return
         if read_from_env:
-            email = os.environ.get('HANGOUTS_EMAIL')
-            contact = os.environ.get('HANGOUTS_CONTACT')
-            password = os.environ.get('HANGOUTS_PASSWORD')
+            email = os.environ.get('YOUTUBE_EMAIL')
+            password = os.environ.get('YOUTUBE_PASSWORD')
 
         if email is None:
-            if contact is None:
-                print("contact number and email can't both be None")
-            else:
-                uid = contact
-        else:
-            uid = email
-        
-        self.driver.maximize_window()
+            print("email can't be None")
+        if password is None:
+            print("password can't be None")
+
         self.driver.get("https://stackoverflow.com/users/login")
         self.driver.implicitly_wait(self.patience) 
 
@@ -106,19 +67,19 @@ class YouTubeEngine(object):
         sign_in.click()
         self.driver.implicitly_wait(self.patience)
         if "https://accounts.google.com/o/oauth2/auth/identifier" not in self.driver.current_url:
-            self.login(email, contact, password, read_from_env)
+            self.login_direct(email, password, read_from_env)
+            return
 
         uid_field = self.driver.find_element_by_xpath("//input[@type='email']")
         self.driver.implicitly_wait(self.patience)
         # uid_field.clear()
-        for letter in uid:
+        for letter in email:
             time.sleep(0.01*random.randint(3,20))
             uid_field.send_keys(letter)
         uid_field.send_keys(Keys.ENTER)
-        
         self.driver.implicitly_wait(self.patience)
-        time.sleep(5)
 
+        time.sleep(5)
         password_field = self.driver.find_element_by_xpath("//input[@type='password']")
         self.driver.implicitly_wait(self.patience)
         # password_field.clear()
@@ -127,12 +88,55 @@ class YouTubeEngine(object):
             password_field.send_keys(letter)
         password_field.send_keys(Keys.ENTER)
 
-        time.sleep(5)
-        self.driver.get("https://youtube.com/")
-
-    def logout(self):
+        time.sleep(3)
+        self.logged_in = True
         self.driver.get("https://youtube.com/")
         self.driver.implicitly_wait(self.patience)
+
+    def login_direct(self, email=None, password=None, read_from_env=True):
+        if self.logged_in:
+            return
+        if read_from_env:
+            email = os.environ.get('YOUTUBE_EMAIL')
+            password = os.environ.get('YOUTUBE_PASSWORD')
+
+        if email is None:
+            print("email can't be None")
+        if password is None:
+            print("password can't be None")
+
+        self.driver.maximize_window()
+        self.driver.get("https://accounts.google.com/login")
+
+        uid_field = self.driver.find_element_by_xpath("//input[@type='email']")
+        self.driver.implicitly_wait(self.patience)
+        # uid_field.clear()
+        for letter in email:
+            time.sleep(0.01*random.randint(3,20))
+            uid_field.send_keys(letter)
+        uid_field.send_keys(Keys.ENTER)
+        self.driver.implicitly_wait(self.patience)
+
+        time.sleep(5)
+        password_field = self.driver.find_element_by_xpath("//input[@type='password']")
+        self.driver.implicitly_wait(self.patience)
+
+        for letter in password:
+            time.sleep(0.01*random.randint(3,20))
+            password_field.send_keys(letter)
+        password_field.send_keys(Keys.ENTER)
+        time.sleep(3)
+        
+        self.logged_in = True
+        self.driver.get("https://youtube.com/")
+        self.driver.implicitly_wait(self.patience)
+
+    def logout(self):
+        if not(self.logged_in):
+            return
+        self.driver.get("https://youtube.com/")
+        self.driver.implicitly_wait(self.patience)
+        self.logged_in = False
         profile_pic = self.driver.find_element_by_xpath("//img[@id='img']")
         
         profile_pic.click()
@@ -151,7 +155,7 @@ class YouTubeEngine(object):
         self.driver.implicitly_wait(self.patience)
         search_bar = self.driver.find_element_by_xpath("//input[@id='search']")
         
-        mistakes = random.randint(1,4)
+        mistakes = random.randint(1, min(4, len(query)))
         mistake_indices = random.sample([i for i in range(len(query))], mistakes)
         new_query = []
         mask = []
@@ -226,11 +230,131 @@ class YouTubeEngine(object):
                                     views=views,
                                     creator=creator,
                                     duration=duration,
+                                    driver=self.driver,
+                                    patience=self.patience,
                                     upload_date=upload_date,
                                     description=description)
             output.append(next_vid)
 
         return output
+
+    def get_playlists(self):
+        # the first video ever on YouTube: "Me at the zoo"
+        self.driver.get("https://www.youtube.com/")
+        self.driver.implicitly_wait(self.patience)
+        time.sleep(1.3)
+
+        self.driver.implicitly_wait(self.patience)
+        more = self.driver.find_element_by_xpath("//yt-formatted-string[contains(text(), 'Show more')]")
+        more.click()
+
+        self.playlists = []
+        playlists = self.driver.find_elements_by_xpath("//a[@id='endpoint' and contains(@href,  'playlist?')]")
+        for i, playlist in enumerate(playlists):
+            self.driver.execute_script("arguments[0].scrollIntoView();", playlist) 
+            time.sleep(0.2)
+            playlist = self.driver.find_elements_by_xpath("//a[@id='endpoint' and contains(@href,  'playlist?')]")[i]
+            title = playlist.text
+            url = playlist.get_attribute("href")
+            self.playlists.append(YouTubePlaylist(url, self.driver, title, self.patience))
+
+        return self.playlists
+
+    """
+    Playlist is generated with only one video, the first video ever on YouTube
+    """
+    def create_playlist(self, title='Dank Videos', privacy='Private'):
+        # the first video ever on YouTube: "Me at the zoo"
+        self.driver.get("https://www.youtube.com/watch?v=jNQXAC9IVRw")
+        self.driver.implicitly_wait(self.patience)
+        
+        save = self.driver.find_element_by_xpath("//button[@id='button' and @aria-label='Save to playlist']")
+        save.click()
+        add = self.driver.find_element_by_xpath("//div[@id='content-icon']")
+        add.click()
+        self.driver.implicitly_wait(self.patience)
+        time.sleep(1)
+
+        name = self.driver.find_element_by_xpath("//iron-input[@slot='input' and @id='input-1']//input")
+        mistakes = random.randint(1, min(4, len(title)))
+        mistake_indices = random.sample([i for i in range(len(title))], mistakes)
+        new_title = []
+        mask = []
+
+        j = 0
+        for i in range(len(title)+mistakes):
+            if i in mistake_indices:
+                random_letter = random.sample(ascii_lowercase, 1)
+                new_title.append(random_letter[0])
+                j += 1
+                mask.append(0)
+            else:
+                new_title.append(title[i-j])
+                mask.append(1)
+
+        for i, letter in enumerate(new_title):
+            name.send_keys(letter)
+            time.sleep(0.01*random.randint(10,15))
+            if mask[i] == 0:
+                name.send_keys(Keys.BACKSPACE)
+                time.sleep(0.01*random.randint(10,15))        
+
+        dropdown = self.driver.find_elements_by_xpath("//iron-icon")[0]
+        dropdown.click()
+        time.sleep(1)
+
+        btn = self.driver.find_elements_by_xpath("//ytd-privacy-dropdown-item-renderer")
+        mode = {'public':0, 'unlisted':1, 'private':2}
+        index = mode[privacy.lower()]
+        btn[index].click()
+        
+        time.sleep(0.5)
+        create = self.driver.find_element_by_xpath("//paper-button[@aria-label='Create']")
+        create.click()
+
+    def get_playlists(self):
+        self.driver.get("https://www.youtube.com/")
+        self.driver.implicitly_wait(self.patience)
+        time.sleep(1.3)
+        # menu_btn = self.driver.find_element_by_xpath("//button[@id='button' and @aria-label='Guide']")
+        # menu_btn.click()
+        self.driver.implicitly_wait(self.patience)
+        more = self.driver.find_element_by_xpath("//yt-formatted-string[contains(text(), 'Show more')]")
+        more.click()
+
+        self.playlists = []
+        playlists = self.driver.find_elements_by_xpath("//a[@id='endpoint' and contains(@href,  'playlist?')]")
+        for i, playlist in enumerate(tqdm.tqdm(playlists)):
+            self.driver.execute_script("arguments[0].scrollIntoView();", playlist) 
+            time.sleep(0.2)
+            playlist = self.driver.find_elements_by_xpath("//a[@id='endpoint' and contains(@href,  'playlist?')]")[i]
+            title = playlist.text
+            url = playlist.get_attribute("href")
+            self.playlists.append(YouTubePlaylist(url, self.driver, title, self.patience))
+        # time.sleep(1)
+        return self.playlists
+
+    def get_subscriptions(self):
+        # the first video ever on YouTube: "Me at the zoo"
+        self.driver.get("https://www.youtube.com/")
+        self.driver.implicitly_wait(self.patience)
+        time.sleep(1.3)
+
+        self.driver.implicitly_wait(self.patience)
+        more = self.driver.find_elements_by_xpath("//ytd-guide-section-renderer")[1].find_element_by_xpath(".//yt-formatted-string[contains(text(), 'more')]")
+        more.click()
+
+        self.subscriptions = []
+        subscriptions = self.driver.find_elements_by_xpath("//a[@id='endpoint' and contains(@href,  '/channel/')]")[1:]
+        for i, sub in enumerate(tqdm.tqdm(subscriptions)):
+            self.driver.execute_script("arguments[0].scrollIntoView();", sub) 
+            time.sleep(0.2)
+            sub = self.driver.find_elements_by_xpath("//a[@id='endpoint' and contains(@href,  '/channel/')]")[1:][i]
+            name = sub.text
+            url = sub.get_attribute("href")
+            self.subscriptions.append(YouTubeProfile(url, name, self.driver, self.patience))
+        # time.sleep(1)
+        return self.subscriptions
 
     # hard profile search, assumes that the profile supplied is an exact name
     def get_profile(self, query='kurtis town', hard=False):
@@ -277,8 +401,10 @@ class YouTubeEngine(object):
                                 about=about,
                                 views=views,
                                 videos=videos,
+                                driver=self.driver,
                                 join_date=join_date,
                                 isverified=isverified,
+                                patience=self.patience,
                                 subscribers=subscribers,
                                 profile_pic=profile_pic)
 
@@ -288,13 +414,23 @@ class YouTubeEngine(object):
                 return
             # if sel
 
-    def close(self):
-        while True:
-            i = input("Please enter q to quit now!\n")
-            if i == 'q':
-                try:
-                    self.logout()
-                    time.sleep(5)
-                except:
-                    self.driver.quit()
-                break
+    def close(self, wait_for_input=False):
+        if wait_for_input:
+            while True:
+                i = input("Please enter q to quit now!\n")
+                if i == 'q':
+                    try:
+                        self.logout()
+                        self.driver.implicitly_wait(self.patience)
+                        self.driver.quit()
+                    except:
+                        self.driver.quit()
+                    break
+
+        else:
+            try:
+                self.logout()
+                self.driver.implicitly_wait(self.patience)
+                self.driver.quit()
+            except:
+                self.driver.quit()

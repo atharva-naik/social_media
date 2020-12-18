@@ -1,29 +1,22 @@
 import colors
+import dotenv
 import selenium
 import pandas as pd
 # from .utils import *
-from .objects import *
+from .models import *
 import os, time, random
 from colors import color
 import tqdm, logging, calendar
 from selenium import webdriver
 from string import ascii_lowercase
+from social_media.utils import smart_int
 from datetime import datetime, timedelta
+from dotenv import load_dotenv,find_dotenv
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options  
 from webdriver_manager.chrome import ChromeDriverManager 
 from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException, ElementClickInterceptedException
 
-def smart_int(string):
-    string = string.replace(",","").strip()
-    if 'K' in string:
-        string = float(string.replace("K",""))*1e+3
-    elif 'M' in string:
-        string = float(string.replace("M",""))*1e+6
-    elif 'B' in string:
-        string = float(string.replace("B",""))*1e+9
-
-    return int(string)
 
 class GMailEngine(object):
     """
@@ -37,6 +30,7 @@ class GMailEngine(object):
     def __init__(self, patience=5, maximize=True):
         super().__init__()
         # self.current_user = None
+        load_dotenv(find_dotenv())
         self.patience = patience
         if self.patience <= 0:
             self.patience = 1        
@@ -55,6 +49,7 @@ class GMailEngine(object):
 
         if email is None:
             print("email id can't be None")
+            return 
         if password is None:
             print("Password can't be None")
             return
@@ -79,7 +74,7 @@ class GMailEngine(object):
         uid_field.send_keys(Keys.ENTER)
         
         self.driver.implicitly_wait(self.patience)
-        time.sleep(5)
+        time.sleep(4)
 
         password_field = self.driver.find_element_by_xpath("//input[@type='password']")
         self.driver.implicitly_wait(self.patience)

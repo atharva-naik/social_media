@@ -1,5 +1,6 @@
-import re
-import string
+"""
+TO BE DELETED
+"""
 
 def get_attribute_rec(div, attr):
     attr += '='

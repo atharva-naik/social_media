@@ -1,29 +1,20 @@
 import colors
 import selenium
 import pandas as pd
-from .utils import *
-from .objects import *
+from .models import *
 import os, time, random
 from colors import color
 import tqdm, logging, calendar
 from selenium import webdriver
 from string import ascii_lowercase
 from datetime import datetime, timedelta
+from social_media.utils import smart_int
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options  
 from webdriver_manager.chrome import ChromeDriverManager 
 from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException, ElementClickInterceptedException
 
-def smart_int(string):
-    string = string.replace(",","").strip()
-    if 'K' in string:
-        string = float(string.replace("K",""))*1e+3
-    elif 'M' in string:
-        string = float(string.replace("M",""))*1e+6
-    elif 'B' in string:
-        string = float(string.replace("B",""))*1e+9
 
-    return int(string)
 
 class TwitterEngine(object):
     '''

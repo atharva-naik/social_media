@@ -18,6 +18,6 @@ setuptools.setup(
         "License :: OSI Approved :: BSD License",
         "Operating System :: OS Independent",
     ],
-    install_requires=['tqdm', 'nltk', 'numpy', 'spacy', 'pandas', 'sklearn', 'datetime', 'selenium', 'ansicolors', 'prettytable', 'webdriver_manager'],
+    install_requires=['tqdm', 'nltk', 'numpy', 'spacy', 'pandas', 'sklearn', 'pytube', 'requests', 'datetime', 'selenium', 'ansicolors', 'prettytable', 'webdriver_manager'],
     python_requires='>=3.6',
 )

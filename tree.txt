@@ -1,44 +1,17 @@
 .
-├── build
-│   ├── bdist.linux-x86_64
-│   └── lib
-│       └── social_media
-│           ├── base.py
-│           ├── facebook
-│           │   ├── base.py
-│           │   └── __init__.py
-│           ├── gmail
-│           │   ├── base.py
-│           │   └── __init__.py
-│           ├── hangouts
-│           │   ├── base.py
-│           │   └── __init__.py
-│           ├── __init__.py
-│           ├── nlp
-│           │   ├── base.py
-│           │   └── __init__.py
-│           ├── quora
-│           │   ├── base.py
-│           │   └── __init__.py
-│           ├── scrapers.py
-│           ├── simulation.py
-│           ├── twitter
-│           │   ├── base.py
-│           │   ├── __init__.py
-│           │   ├── objects.py
-│           │   └── utils.py
-│           ├── whatsapp
-│           │   ├── base.py
-│           │   └── __init__.py
-│           └── youtube
-│               ├── base.py
-│               └── __init__.py
-├── dist
-│   ├── social_media_Atharva1797-0.0.1-py3-none-any.whl
-│   └── social_media-Atharva1797-0.0.1.tar.gz
+├── example_ftp.py
 ├── example.ipynb
 ├── example.py
-├── example_tfp.py
+├── example_ytc.py
+├── images
+│   ├── facebook.png
+│   ├── gmail.png
+│   ├── hangouts.png
+│   ├── instagram.jpg
+│   ├── quora.png
+│   ├── twitter.png
+│   ├── whatsapp.png
+│   └── youtube.png
 ├── LICENSE
 ├── README.md
 ├── requirements.in
@@ -55,9 +28,11 @@
 │   ├── gmail
 │   │   ├── base.py
 │   │   ├── __init__.py
+│   │   ├── objects.py
 │   │   └── __pycache__
 │   │       ├── base.cpython-37.pyc
-│   │       └── __init__.cpython-37.pyc
+│   │       ├── __init__.cpython-37.pyc
+│   │       └── objects.cpython-37.pyc
 │   ├── hangouts
 │   │   ├── base.py
 │   │   ├── __init__.py
@@ -100,21 +75,21 @@
 │   │   │   ├── objects.cpython-37.pyc
 │   │   │   └── utils.cpython-37.pyc
 │   │   └── utils.py
+│   ├── utils.py
 │   ├── whatsapp
 │   │   ├── base.py
 │   │   └── __init__.py
 │   └── youtube
 │       ├── base.py
 │       ├── __init__.py
+│       ├── models.py
 │       └── __pycache__
 │           ├── base.cpython-37.pyc
-│           └── __init__.cpython-37.pyc
-├── social_media_Atharva1797.egg-info
-│   ├── dependency_links.txt
-│   ├── PKG-INFO
-│   ├── SOURCES.txt
-│   └── top_level.txt
+│           ├── __init__.cpython-37.pyc
+│           ├── models.cpython-37.pyc
+│           └── objects.cpython-37.pyc
 ├── tests
-└── tree.txt
+├── tree.txt
+└── uA2eHu56POI.jpg
 
-32 directories, 85 files
+19 directories, 73 files

@@ -3,9 +3,12 @@ nltk
 numpy
 spacy
 pandas
+pytube
 sklearn
 datetime
+requests
 selenium
 ansicolors
 prettytable
+python-dotenv
 webdriver_manager
