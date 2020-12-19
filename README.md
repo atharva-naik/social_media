@@ -57,3 +57,19 @@ t.logout()
 ```python
 t.close(wait_for_input=False) # if wait_for_input is true then script will wait for the user to enter q to terminate
 ```
+
+**USE CASE 2:**
+Download a yotube playlist ("Downloading VSauce's Mind Field series")
+
+```python
+# example to download youtube playlists
+from social_media.youtube.base import YouTubeEngine
+y = YouTubeEngine() # init the engine object
+y.login() # login to youtube account, needed if you want to add the playlist to your library
+first_result = y.get_playlists('Mind Field') # search for playlist and get the first result
+# first_result[0].add_playlist() optional step, if you want to add the playlist to your library
+first_result[0].populate() # load video objects for all the contents of the playlist (can be skipped)
+first_result[0].download() # download all videos in the playlist (internally populates the playlist if it is not populated)
+y.logout() # logout from your youtube account
+y.close()
+```
