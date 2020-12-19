@@ -1,10 +1,12 @@
 import colors
+import requests
 import selenium
 import prettytable
 import pandas as pd
 # from .utils import *
 from .models import *
 from colors import color
+from instabot import Bot
 import tqdm, logging, calendar
 from selenium import webdriver
 import os, re, time, random, copy
@@ -15,7 +17,7 @@ from dotenv import load_dotenv, find_dotenv
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options  
 from webdriver_manager.chrome import ChromeDriverManager 
-from social_media.utils import split_by_template, format_time, smart_int
+from social_media.utils import split_by_template, format_time, smart_int, rainbow_text
 from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException, ElementClickInterceptedException
 
 # once you logout, the engine has to be destroyed
@@ -101,6 +103,10 @@ class InstagramEngine(object):
         self.driver.implicitly_wait(self.patience)
 
     def get_stories(self, rate=0.5, limit=20):
+        self.driver.get("https://www.instagram.com/")
+        self.driver.implicitly_wait(self.patience)
+        time.sleep(1)
+
         first_story = self.driver.find_element_by_xpath("//button[@role='menuitem']")
         first_story.click()
         self.driver.implicitly_wait(self.patience)
@@ -135,8 +141,91 @@ class InstagramEngine(object):
         pbar.close()
         return stories
 
-    def get_profile(self):
-        pass
+    def feed(self):
+        self.driver.get('https://www.instagram.com/')
+        self.driver.implicitly_wait(self.patience)
+        time.sleep(2)
+
+        articles = self.driver.find_elements_by_xpath("//article[@role='presentation']")
+        for i, article in enumerate(articles):
+            by, title = article.text.split('\n')
+            meta = article.find_element_by_xpath(".//div/div/div/div/div/img").get_attribute('alt')
+            likes = smart_int(article.find_element_by_xpath(".//button/span").text.strip())
+
+            article.find_element_by_xpath(".//a[contains(@href, '/p/')]").text.replace(",","")
+            timestamp = article.find_element_by_xpath(".//time").get_attribute('datetime')
+            images = article.find_element_by_xpath(".//div/div/div/div/div/img").get_attribute('srcset').split(',')
+            images = [image.split()[0].strip() for image in images]
+
+            # comments = smart_int(re.findall(r"([0-9]+)", article.find_element_by_xpath(".//a[contains(@href, '/p/')]").replace(",",""))[0])
+            comments = smart_int(article.find_element_by_xpath(".//a[contains(@href, '/p/')]").text.split()[-2])
+            url = article.find_element_by_xpath(".//a[contains(@href, '/p/')]").get_attribute("href")
+            caption = article.find_element_by_xpath(".//div[@data-testid='post-comment-root']").text
+
+    def get_profile(self, user='willsmith', hard=False):
+        if hard:
+            self.driver.get(f"https://www.instagram.com/{user}/")
+            self.driver.implicitly_wait(self.patience)
+            time.sleep(2)
+            username = user
+        else:
+            self.search(user, user=True)
+            time.sleep(2)
+            username = self.driver.current_url.split('/')[-2]
+
+        if self.driver.find_element_by_tag_name('h2') == "Sorry, this page isn't available.":
+            print(color('Profile not available!', fg='red'))
+            return
+        else:
+            url = self.driver.current_url
+        name = self.driver.find_element_by_xpath("//section//div//h1").text 
+        
+        posts = smart_int(self.driver.find_element_by_xpath("//li//span//span").text)
+        followers = self.driver.find_element_by_xpath("//a[contains(@href, 'followers')]").text.replace("followers","")
+        following = self.driver.find_element_by_xpath("//a[contains(@href, 'following')]").text.replace("following","")
+        followers = smart_int(followers)
+        following = smart_int(following)
+        
+        try:
+            bio = self.driver.find_element_by_xpath("//section//div//h1/../span").text 
+        except:
+            bio = None
+        try:
+            link = self.driver.find_element_by_xpath("//section//div//h1/../a").text 
+        except:
+            link = None
+        profile_photo = self.driver.find_element_by_xpath("//img[@data-testid='user-avatar']").get_attribute('src')
+        try:
+            useless = self.driver.find_element_by_xpath("//span[@title='Verified']")
+            isverified = True
+        except:
+            isverified = False
+        return InstagramProfile(url=url,
+                                bio=bio,
+                                name=name,
+                                link=link,
+                                posts=posts,
+                                username=username,
+                                driver=self.driver,
+                                following=following,
+                                followers=followers,
+                                isverified=isverified,
+                                patience=self.patience,
+                                profile_photo=profile_photo)
+
+    def post(self, img='https://upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png', caption="I'm a bot, please ban me"):
+        self.logout()
+        if 'http' in img:
+            open('DELETE_ME.png', "wb").write(requests.get(img).content)
+            img = "DELETE_ME.png"
+        print(rainbow_text("Passing the ⚽ to my friend instabot"))
+        print("please check out their repo: https://github.com/instagrambot/instabot/tree/master/instabot/api")
+        bot = Bot()
+        bot.login(username=self.username, password=os.environ.get('INSTAGRAM_PASSWORD'))
+        bot.upload_photo(img, caption)
+        bot.logout()
+        self.login()
+        os.system('rm DELETE_ME.png')
 
     def logout(self):
         if not(self.logged_in):
@@ -152,10 +241,13 @@ class InstagramEngine(object):
         log_out = self.driver.find_element_by_xpath("//div[contains(text(), 'Log Out')]")  
         log_out.click()
 
-    def search(self, query="a_the_rva", filter_=None):
-        self.driver.get('https://youtube.com/')
+    def search(self, query="a_the_rva", user=True, filter_=None):
+        if not(user):
+            if not(query.startswith('#')):
+                query = '#'+query
+        self.driver.get('http://instagram.com/')
         self.driver.implicitly_wait(self.patience)
-        search_bar = self.driver.find_element_by_xpath("//input[@id='search']")
+        search_bar = self.driver.find_element_by_xpath("//input[@placeholder='Search']")
         
         mistakes = random.randint(1, min(4, len(query)))
         mistake_indices = random.sample([i for i in range(len(query))], mistakes)
@@ -181,24 +273,15 @@ class InstagramEngine(object):
                 time.sleep(0.01*random.randint(10,15))
         search_bar.send_keys(Keys.ENTER)
         
+        while True:
+            try:
+                first_result = self.driver.find_element_by_xpath("//input[@placeholder='Search']/../div/following-sibling::div/following-sibling::div/following-sibling::div//a")
+                first_result.click()
+                break
+            except:
+                time.sleep(0.5)
         self.driver.implicitly_wait(self.patience)
         time.sleep(1)
-        # if filter_ is not None:
-        #     filter_btn = self.driver.find_element_by_xpath("//paper-button[@aria-label='Search filters']")
-        #     filter_btn.click()
-            
-        #     if not isinstance(filter_, dict):
-        #         print(f"filter_ argument is of type {type(filter_)}, it needs to be of dict type")
-        #         return
-        #     else:
-        #         if filter_.keys() not in ALLOWED_FILTERS.keys():
-        #             print(f"filter needs to adhere to the following format: \n{filters_table}")
-        #         else:
-        #             for key in filter_:
-        #                 if filter_[key] not in ALLOWED_FILTERS[key]:
-        #                     print(f"filter needs to adhere to the following format: \n{filters_table}")
-            
-
 
     def close(self, wait_for_input=False):
         if wait_for_input:

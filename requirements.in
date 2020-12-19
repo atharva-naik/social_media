@@ -5,6 +5,7 @@ spacy
 pandas
 pytube
 sklearn
+instabot
 datetime
 requests
 selenium

@@ -4,15 +4,17 @@ import time
 import string
 import requests
 import subprocess
+from colors import color
 
 def smart_int(string):
     string = string.replace(",","").strip()
-    if 'K' in string:
-        string = float(string.replace("K",""))*1e+3
-    elif 'M' in string:
-        string = float(string.replace("M",""))*1e+6
-    elif 'B' in string:
-        string = float(string.replace("B",""))*1e+9
+    string = string.lower()
+    if 'k' in string:
+        string = float(string.replace("k",""))*1e+3
+    elif 'm' in string:
+        string = float(string.replace("m",""))*1e+6
+    elif 'b' in string:
+        string = float(string.replace("b",""))*1e+9
 
     return int(string)
 
@@ -85,6 +87,14 @@ def get_attribute_rec(div, attr):
 #         os.system("cd TerminalImageViewer/src/main/cpp")
 #         os.system("make")
 #         os.system("sudo make install")
+
+def rainbow_text(text):
+    colors_ = ['#9400d3', '#4b0082', '#0000ff', '#00ff00', '#ffff00', '#ff7f00', '#ff0000']
+    new_text = ''
+    for i, letter in enumerate(text):
+        new_text += color(letter, fg=f'{colors_[i%7]}')
+    
+    return new_text
 
 def install_tiv():
     print("Installing tiv ...")
