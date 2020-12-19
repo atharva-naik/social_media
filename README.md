@@ -15,10 +15,10 @@ A library for automating several social media actions, such as posting, login, n
 Will be uploaded to PyPI soon. Some versions will be uploaded to TestPyPI
 
 ### Cool updates:
-**20th Dec: YOU CAN NOW VIEW YOUR INSTAGRAM FIELD ON THE TERMINAL NOW**
+**20th Dec: YOU CAN NOW VIEW YOUR INSTAGRAM FEED ON THE TERMINAL NOW**
 <img style="display: inline;" src="https://github.com/atharva-naik/social_media/blob/main/images/instagram_feed1.png?raw=true">
 <img style="display: inline;" src="https://github.com/atharva-naik/social_media/blob/main/images/instagram_feed2.png?raw=true">
-NOTE: (only teted for linux till now)
+NOTE: (only tested for linux till now)
 
 ### Some random use cases
 **USE CASE 1:**
