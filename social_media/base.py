@@ -1,10 +1,15 @@
 import inspect
+from social_media.gmail.models import *
+from social_media.twitter.models import *
+from social_media.youtube.models import *
+from social_media.instagram.models import *
 from social_media.facebook.base import FacebookEngine
 from social_media.gmail.base import GMailEngine
 from social_media.hangouts.base import HangoutsEngine
 from social_media.quora.base import QuoraEngine
 from social_media.twitter.base import TwitterEngine
 from social_media.youtube.base import YouTubeEngine
+from social_media.instagram.base import InstagramEngine
 
 class PlatformNotSupported(Exception):
     """

@@ -27,6 +27,7 @@ class TwitterEngine(object):
     def __init__(self, patience=5):
         super().__init__()
         # self.current_user = None
+        self.type = "twitter"
         self.patience = patience
         if self.patience <= 0:
             self.patience = 1        

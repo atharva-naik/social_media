@@ -9,23 +9,32 @@ import tqdm, logging, calendar
 from selenium import webdriver
 from string import ascii_lowercase
 from datetime import datetime, timedelta
+from dotenv import load_dotenv, find_dotenv
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options  
 from webdriver_manager.chrome import ChromeDriverManager 
 from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException, ElementClickInterceptedException
 
 class FacebookEngine(object):
-    def __init__(self, patience=5):
+    def __init__(self, patience=5, maximize=True):
         super().__init__()
+        load_dotenv(find_dotenv())
+        self.type = "facebook"
         self.patience = patience
+        self.logged_in = False
         self.current_user = None
         if self.patience <= 0:
             self.patience = 1    
         chrome_options = Options()
         chrome_options.add_argument("--disable-notifications")
         self.driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chrome_options)
+        if maximize:
+            self.driver.maximize_window()
 
     def login(self, email=None, contact=None, password=None, read_from_env=True):
+        if self.logged_in == True:
+            return
+        
         self.driver.maximize_window()
         self.driver.get("https://www.facebook.com/")
         self.driver.implicitly_wait(self.patience)
@@ -57,14 +66,19 @@ class FacebookEngine(object):
         password_field.send_keys(Keys.ENTER)
         self.driver.implicitly_wait(self.patience)
         time.sleep(2)
+        self.logged_in = True
 
     def logout(self):
+        if self.logged_in == False:
+            return
+
         account = self.driver.find_element_by_xpath("//div[@aria-label='Account']")
         account.click()
         time.sleep(1.5)
 
         log_out = self.driver.find_element_by_xpath("//span[text()='Log Out']")
         log_out.click()
+        self.logged_in = False
 
     def search(self, query="atharva naik IIT"):
         search_bar = self.driver.find_element_by_xpath("//input[@type='search']")

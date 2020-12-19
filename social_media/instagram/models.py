@@ -102,16 +102,17 @@ class InstagramProfile(object):
         return f"{self.username} ({self.name}) has {self.posts} posts, {self.followers} followers and {self.following} following ..."
     
 class InstagramPost(object):
-    def __init__(self, url, driver, patience, title=None, meta=None, by=None, timestamp=None, caption=None, images=[], likes=None, comments=None):
+    def __init__(self, url, driver, patience, geo=None, geo_link=None, meta=None, by=None, timestamp=None, caption=None, images=[], likes=None, comments=None):
         self.url=url
         self.driver=driver
         self.patience=patience
-        self.title=title
+        self.geo=geo
+        self.geo_link=geo_link
         self.meta=meta
         self.by=by 
         self.timestamp=timestamp
         self.caption=caption
-        self.image=image
+        self.images=images
         self.likes=likes
         self.comments=comments
     
@@ -119,16 +120,42 @@ class InstagramPost(object):
         post={}
     
         post['url']=self.url
-        post['title']=self.title
+        post['geo']=self.geo
+        post['geo link']=self.geo_link
         post['meta']=self.meta
         post['by']=self.by
         post['date']=self.timestamp
         post['caption']=self.caption
-        post['image']=self.images
+        post['images']=self.images
         post['likes']=self.likes
         post['comments']=self.comments
 
         return post
+
+    def __str__(self):
+        if self.images:
+            open("DELETE.jpg", "wb").write(requests.get(self.images[0]).content)
+            try:
+                subprocess.run(["tiv", "DELETE.jpg"])
+            except NotADirectoryError:
+                install_tiv()
+            os.system("rm DELETE.jpg")
+
+        op = PrettyTable()
+        op.field_names = [color(f"{self.by}", style='bold')]
+        op.align[op.field_names[0]]="l"
+        if self.geo:
+            op.add_row([color(self.geo)])
+        op.add_row(["❤️ 🗨 ✉"])
+        op.add_row([color(f"{self.likes} likes", style='bold')])
+        op.add_row([color(self.by, style='bold') + ' ' + color(f"{' '.join(self.caption.split()[1:])}") ])
+        op.add_row([color(f"View all {self.comments} comments", fg='gray')])
+        op.add_row([color(self.timestamp.strftime("%-d %B %Y, %-I:%-M %p"), fg='gray')])
+
+        return op.get_string()
+
+    def __repr__(self):
+        return f"posted by {self.by} on {self.timestamp.strftime('%-d %B %Y, %-I:%-M %p')}, {self.likes} likes, {self.comments} comments"
 
     def comment(self, text='beep boop'):
         self.driver.get(url)

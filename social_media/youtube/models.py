@@ -304,7 +304,7 @@ class YouTubeProfile(object):
 
 
 class YouTubePlaylist(object):
-    def __init__(self, url, driver, title, patience, visibility=None, views=None, videos={}, last_updated=None, description=None, num_videos=0):
+    def __init__(self, url, driver, title, patience, visibility=None, creator=None, views=None, videos={}, last_updated=None, description=None, num_videos=0):
         self.url=url
         self.driver=driver
         self.patience=patience
@@ -344,6 +344,28 @@ class YouTubePlaylist(object):
             self.driver.execute_script(f"window.scrollTo(0, {scroll_height});")
             scroll_height += 10000
 
+    def add_playlist(self):
+        self.driver.get(self.url)
+        self.driver.implicitly_wait(self.patience)
+        time.sleep(1.5)
+
+        try:
+            save_btn = self.driver.find_element_by_xpath("//yt-icon-button/button[@id='button' and @aria-label='Save playlist']")
+            save_btn.click()
+        except:
+            return
+
+    def remove_playlist(self):
+        self.driver.get(self.url)
+        self.driver.implicitly_wait(self.patience)
+        time.sleep(1.5)
+
+        try:
+            remove_btn = self.driver.find_element_by_xpath("//yt-icon-button/button[@id='button' and @aria-label='Remove from Library']")
+            remove_btn.click()
+        except:
+            return
+
     #NOTE: Doesn't work properly
     def populate(self):
         if not(self.visibility):
@@ -365,6 +387,16 @@ class YouTubePlaylist(object):
             # else:
             #     duration = None
             self.videos[title] = url
+
+    def download(self):
+        if self.videos:
+            pass
+        else:
+            print("populating playlist ...")
+            self.populate()
+        for title in tqdm.tqdm(self.videos):
+            vid = YouTubeVideo(title=title, url=self.videos[title], driver=self.driver, patience=self.patience)
+            vid.download()
 
     def add(self, video):
         current_url = self.driver.current_url
@@ -393,6 +425,8 @@ class YouTubePlaylist(object):
     def __str__(self):
         op = PrettyTable()
         op.field_names = [f"{self.title}"]
+        if self.creator:
+            op.add_row([color(f"{self.creator}", fg='gray')])
         op.add_row([color(f"{self.num_videos} videos • {self.views} views • {self.last_updated}", fg="grey", style="bold")])
         if self.visibility:
             if self.visibility == 'Private':

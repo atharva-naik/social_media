@@ -34,6 +34,7 @@ class InstagramEngine(object):
     def __init__(self, patience=5, maximize=True):
         super().__init__()
         load_dotenv(find_dotenv())
+        self.type = "instagram"  
         self.patience = patience
         self.logged_in = False
         self.username = None
@@ -121,7 +122,6 @@ class InstagramEngine(object):
         pbar = tqdm.tqdm(limit)
 
         while num_stories < limit:
-            
             link = self.driver.current_url 
             date = self.driver.find_element_by_xpath("//time").get_attribute("datetime")
             curr_user = link.split('/')[-3]
@@ -145,22 +145,47 @@ class InstagramEngine(object):
         self.driver.get('https://www.instagram.com/')
         self.driver.implicitly_wait(self.patience)
         time.sleep(2)
+        iposts = []
 
         articles = self.driver.find_elements_by_xpath("//article[@role='presentation']")
-        for i, article in enumerate(articles):
-            by, title = article.text.split('\n')
-            meta = article.find_element_by_xpath(".//div/div/div/div/div/img").get_attribute('alt')
+        for i, article in enumerate(tqdm.tqdm(articles)):
+            by = article.text.split('\n')[0]
+            try:
+                geo = article.find_element_by_xpath(".//a[contains(@href, 'explore')]").text
+                geo_link = article.find_element_by_xpath(".//a[contains(@href, 'explore')]").get_attribute("href")
+            except:
+                geo = None
+                geo_link = None
+            try:
+                meta = article.find_element_by_xpath(".//div/div/div/div/div/img").get_attribute('alt')
+            except:
+                meta = None
             likes = smart_int(article.find_element_by_xpath(".//button/span").text.strip())
 
-            article.find_element_by_xpath(".//a[contains(@href, '/p/')]").text.replace(",","")
+            # article.find_element_by_xpath(".//a[contains(@href, '/p/')]").text.replace(",","")
             timestamp = article.find_element_by_xpath(".//time").get_attribute('datetime')
-            images = article.find_element_by_xpath(".//div/div/div/div/div/img").get_attribute('srcset').split(',')
+            timestamp = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%f%z")
+            # images = article.find_element_by_xpath(".//div/div/div/div/div/img").get_attribute('srcset').split(',')
+            images = article.find_element_by_xpath(".//img[@class='FFVAD']").get_attribute('srcset').split(',')
             images = [image.split()[0].strip() for image in images]
 
             # comments = smart_int(re.findall(r"([0-9]+)", article.find_element_by_xpath(".//a[contains(@href, '/p/')]").replace(",",""))[0])
             comments = smart_int(article.find_element_by_xpath(".//a[contains(@href, '/p/')]").text.split()[-2])
             url = article.find_element_by_xpath(".//a[contains(@href, '/p/')]").get_attribute("href")
             caption = article.find_element_by_xpath(".//div[@data-testid='post-comment-root']").text
+            iposts.append(InstagramPost(by=by,
+                                        geo=geo,
+                                        url=url,
+                                        meta=meta,
+                                        likes=likes,
+                                        images=images,
+                                        caption=caption,
+                                        comments=comments,
+                                        driver=self.driver,
+                                        timestamp=timestamp,
+                                        patience=self.patience))
+
+        return iposts
 
     def get_profile(self, user='willsmith', hard=False):
         if hard:

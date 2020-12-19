@@ -238,8 +238,28 @@ class YouTubeEngine(object):
 
         return output
 
-    def get_playlists(self):
-        # the first video ever on YouTube: "Me at the zoo"
+    def get_playlists(self, query=None, limit=5):
+        if query:
+            self.search(query=query)
+            self.driver.implicitly_wait(self.patience)
+        
+        playlists = self.driver.find_elements_by_xpath("//yt-formatted-string[@id='view-more']")
+        output = []
+
+        for i, playlist in enumerate(playlists):
+            url = playlist.find_element_by_xpath(".//a").get_attribute("href")
+            title = playlist.find_element_by_xpath("./../a/h3").text
+            creator = playlist.find_element_by_xpath("./../a/ytd-video-meta-block").text
+            next_vid = YouTubePlaylist(url=url,
+                                    title=title,
+                                    creator=creator,
+                                    driver=self.driver,
+                                    patience=self.patience)
+            output.append(next_vid)
+
+        return output
+
+    def your_playlists(self):
         self.driver.get("https://www.youtube.com/")
         self.driver.implicitly_wait(self.patience)
         time.sleep(1.3)
@@ -311,28 +331,6 @@ class YouTubeEngine(object):
         time.sleep(0.5)
         create = self.driver.find_element_by_xpath("//paper-button[@aria-label='Create']")
         create.click()
-
-    def get_playlists(self):
-        self.driver.get("https://www.youtube.com/")
-        self.driver.implicitly_wait(self.patience)
-        time.sleep(1.3)
-        # menu_btn = self.driver.find_element_by_xpath("//button[@id='button' and @aria-label='Guide']")
-        # menu_btn.click()
-        self.driver.implicitly_wait(self.patience)
-        more = self.driver.find_element_by_xpath("//yt-formatted-string[contains(text(), 'Show more')]")
-        more.click()
-
-        self.playlists = []
-        playlists = self.driver.find_elements_by_xpath("//a[@id='endpoint' and contains(@href,  'playlist?')]")
-        for i, playlist in enumerate(tqdm.tqdm(playlists)):
-            self.driver.execute_script("arguments[0].scrollIntoView();", playlist) 
-            time.sleep(0.2)
-            playlist = self.driver.find_elements_by_xpath("//a[@id='endpoint' and contains(@href,  'playlist?')]")[i]
-            title = playlist.text
-            url = playlist.get_attribute("href")
-            self.playlists.append(YouTubePlaylist(url, self.driver, title, self.patience))
-        # time.sleep(1)
-        return self.playlists
 
     def get_subscriptions(self):
         # the first video ever on YouTube: "Me at the zoo"
