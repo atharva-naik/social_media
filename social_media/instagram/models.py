@@ -1,10 +1,14 @@
 import os
 import time
+import random
+import hashlib
 import requests
 import subprocess
 from colors import color
+from string import ascii_lowercase
 from prettytable import PrettyTable
 from social_media.utils import install_tiv
+from selenium.webdriver.common.keys import Keys
 
 class InstagramProfile(object):
     def __init__(self, url, name, username, driver, patience, isverified=False, posts=None, followers=None, following=None, bio=None, link=None, profile_photo=None):
@@ -71,6 +75,67 @@ class InstagramProfile(object):
                     time.sleep(0.5)
         except:
             return
+
+    def mount(self):
+        self.driver.get(self.url)
+        self.driver.implicitly_wait(self.patience)
+        time.sleep(1)
+
+        message_btn = self.driver.find_element_by_xpath("//button[text()='Message']")
+        message_btn.click()
+        self.driver.implicitly_wait(self.patience)
+        time.sleep(1)
+
+    def get_messages(self, limit=10):
+        chat_threads = self.driver.find_elements_by_xpath("//div[contains(text(), ':')]")
+        messages = []
+        
+        for chat_thread in chat_threads:
+            timestamp = chat_thread.text
+            chat = chat_thread.find_element_by_xpath("./../../following-sibling::div")
+            while ':' not in chat: 
+                element = chat
+                text = element.text
+                messages.append(InstagramMessage(text=text, 
+                                                element=element, 
+                                                driver=self.driver,
+                                                timestamp=timestamp, 
+                                                patience=self.patience))
+                chat = chat.find_element_by_xpath("./../../following-sibling::div")
+            
+        return messages
+
+    def message(self, message="send bobs and vagene"):
+        self.driver.find_element_by_xpath(f"//div[text()='{self.username}']")
+        text_area = self.driver.find_element_by_xpath("//textarea[@placeholder='Message...']")
+        mistakes = random.randint(1, min(4, len(message)))
+        mistake_indices = random.sample([i for i in range(len(message))], mistakes)
+        new_query = []
+        mask = []
+
+        j = 0
+        for i in range(len(message)+mistakes):
+            if i in mistake_indices:
+                random_letter = random.sample(ascii_lowercase, 1)
+                new_query.append(random_letter[0])
+                j += 1
+                mask.append(0)
+            else:
+                new_query.append(message[i-j])
+                mask.append(1)
+
+        for i, letter in enumerate(new_query):
+            text_area.send_keys(letter)
+            time.sleep(0.01*random.randint(7,20))
+            if mask[i] == 0:
+                text_area.send_keys(Keys.BACKSPACE)
+                time.sleep(0.01*random.randint(7,20))
+        text_area.send_keys(Keys.ENTER)
+
+    def unmount(self):
+        self.driver.get("https://www.instagram.com/")
+        self.driver.implicitly_wait(self.patience)
+        time.sleep(1)
 
     def download_image(self, path='{}.jpg'):
         if path == '{}.jpg':
@@ -196,3 +261,61 @@ class InstagramPost(object):
         os.mkdir(path)
         for i, image in enumerate(self.images):
             open(path+'/'+f'{i+1}.jpg', "wb").write(requests.get(image).content)
+
+class InstagramMessage(object):
+    def __init__(self, text, element, driver, patience, timestamp, id=None):
+        super().__init__()
+        self.text=text
+        self.driver=driver
+        self.element=element
+        self.patience=patience
+        self.timestamp=timestamp
+        self.id=hashlib.sha256((text.strip()+f'-{timestamp}').encode()).hexdigest()
+
+    def equals(self, obj): 
+        if isinstance(obj, InstagramMessage):
+            return self.id == obj.id
+        else:
+            return False
+
+    def filter(self, objects, inplace=False):
+        if inplace:
+            objects = list(filter(self.equals, objects)) 
+        else:
+            return list(filter(self.equals, objects))
+
+    def like(self):
+        self.element.click()
+        self.driver.implicitly_wait(self.patience)
+        
+        dot_btn = self.element.find_element_by_xpath(".//button")
+        dot_btn.click()
+        self.driver.implicitly_wait(self.patience)
+        
+        try:
+            like_btn = self.driver.find_element_by_xpath(".//button[text()='Like']")
+            like_btn.click()
+            self.driver.implicitly_wait(self.patience)
+        except:
+            pass
+
+    def unlike(self):
+        self.element.click()
+        self.driver.implicitly_wait(self.patience)
+
+        dot_btn = self.element.find_element_by_xpath(".//button")
+        dot_btn.click()
+        self.driver.implicitly_wait(self.patience)
+        
+        try:
+            unlike_btn = self.driver.find_element_by_xpath(".//button[text()='Unlike']")
+            unlike_btn.click()
+            self.driver.implicitly_wait(self.patience)
+        except:
+            pass
+    
+    def reply(self, text="I'm a nice guy *kisses you in your sleep*"):
+        self.element.click()
+        self.driver.implicitly_wait(self.patience)
+    # def reply(self, text):
+    #     self.element.click()

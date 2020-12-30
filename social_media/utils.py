@@ -6,7 +6,32 @@ import requests
 import subprocess
 from colors import color
 
+URLS_MAP = {'%':"%25",
+            ' ':"%20", 
+            '@':"%40", 
+            '#':"%23", 
+            '$':"%24", 
+            ',':'%2C',
+            '&':'%26',
+            '\'':'%27',
+            '+':"%2B",
+            '/':'%2F', 
+            '^':"%5E",
+            ':':"%3A",
+            ';':"%3B", 
+            '=':"%3D",
+            '?':"%3F",    
+            '[':"%5B",
+            '\\':"%5C",
+            ']':"%5D",
+            '`':"%60",
+            '{':"%7B",
+            '|':"%7C",
+            '}':"%7D"}
+
 def smart_int(string):
+    if string == '':
+        return 0
     string = string.replace(",","").strip()
     string = string.lower()
     if 'k' in string:
@@ -102,3 +127,9 @@ def install_tiv():
     os.system("cd TerminalImageViewer/src/main/cpp")
     os.system("make")
     os.system("sudo make install")
+
+def clean_url(url):
+    for symbol in URLS_MAP:
+        url = url.replace(symbol, URLS_MAP[symbol])
+    
+    return url

@@ -10,6 +10,7 @@ from selenium import webdriver
 from string import ascii_lowercase
 from datetime import datetime, timedelta
 from dotenv import load_dotenv, find_dotenv
+from webdriver_manager.utils import ChromeType
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options  
 from webdriver_manager.chrome import ChromeDriverManager 
@@ -27,7 +28,7 @@ class FacebookEngine(object):
             self.patience = 1    
         chrome_options = Options()
         chrome_options.add_argument("--disable-notifications")
-        self.driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chrome_options)
+        self.driver = webdriver.Chrome(ChromeDriverManager(chrome_type=ChromeType.GOOGLE).install(), chrome_options=chrome_options)
         if maximize:
             self.driver.maximize_window()
 

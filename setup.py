@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="social_media", 
-    version="0.0.2",
+    version="0.0.3.2",
     author="Atharva Naik",
     author_email="atharvanaik2018@gmail.com",
     description="Python package for scraping and automation of social media activity",
@@ -18,6 +18,6 @@ setuptools.setup(
         "License :: OSI Approved :: BSD License",
         "Operating System :: OS Independent",
     ],
-    install_requires=['tqdm', 'nltk', 'numpy', 'spacy', 'pandas', 'sklearn', 'pytube', 'requests', 'datetime', 'selenium', 'ansicolors', 'prettytable', 'webdriver_manager'],
+    install_requires=['tqdm', 'nltk', 'numpy', 'spacy', 'pandas', 'sklearn', 'pytube', 'requests', 'datetime', 'selenium', 'ansicolors', 'prettytable', 'webdriver_manager', 'python-dotenv', 'instabot'],
     python_requires='>=3.6',
 )

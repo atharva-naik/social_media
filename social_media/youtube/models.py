@@ -139,7 +139,7 @@ class YouTubeVideo(object):
             open(path, "wb").write(requests.get(self.thumbnail).content)
         else:
             try:
-                url = f"https://i.ytimg.com/vi/{self.url.split('?v=')[-1]}/maxresdefault.jpg"
+                path = f"https://i.ytimg.com/vi/{self.url.split('?v=')[-2]}/maxresdefault.jpg"
                 open(path, "wb").write(requests.get(self.thumbnail).content)
             except:
                 print(color("404: thumbnail url not found!", fg='red'))

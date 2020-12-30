@@ -12,6 +12,7 @@ from string import ascii_lowercase
 from social_media.utils import smart_int
 from datetime import datetime, timedelta
 from dotenv import load_dotenv,find_dotenv
+from webdriver_manager.utils import ChromeType
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options  
 from webdriver_manager.chrome import ChromeDriverManager 
@@ -34,7 +35,7 @@ class GMailEngine(object):
         self.patience = patience
         if self.patience <= 0:
             self.patience = 1        
-        self.driver = webdriver.Chrome(ChromeDriverManager().install())         
+        self.driver = webdriver.Chrome(ChromeDriverManager(chrome_type=ChromeType.GOOGLE).install())         
         self.current_user=None
         self.email=None
         if maximize:
